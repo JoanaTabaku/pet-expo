@@ -27,7 +27,11 @@ const Carousel = () => {
     <div className="carousel">
       <button onClick={prevSlide} className="arrow left-arrow">&#10094;</button>
       <div className="slide">
-        <img src={images[currentIndex]} alt={`Slide ${currentIndex}`} />
+        <img
+          src={images[currentIndex]}
+          alt={`Slide ${currentIndex}`}
+          className="carousel-image"
+        />
       </div>
       <button onClick={nextSlide} className="arrow right-arrow">&#10095;</button>
     </div>

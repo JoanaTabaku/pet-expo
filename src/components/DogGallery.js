@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchBirds, fetchBirdById } from '../api/apiService';
+import { fetchDogs, fetchDogById } from '../api/apiService';
 import { Modal, Button } from 'react-bootstrap';
 import debounce from 'lodash.debounce';
 import SearchBar from './SearchBar';
-import BirdCard from './BirdCard';
-import './BirdGallery.css';
+import DogCard from './DogCard';
+import './DogGallery.css';
 
-const BirdGallery = () => {
-  const [birds, setBirds] = useState([]);
+const DogGallery = () => {
+  const [dogs, setDogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
-  const [selectedBird, setSelectedBird] = useState(null);
+  const [selectedDog, setSelectedDog] = useState(null);
   const [query, setQuery] = useState('');
 
-  const getBirds = async () => {
+  const getDogs = async (searchQuery) => {
     setLoading(true);
     setError(null);
     try {
-      const birdData = await fetchBirds(query);
-      setBirds(birdData);
+      const dogData = await fetchDogs(searchQuery);
+      setDogs(dogData);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -28,7 +28,7 @@ const BirdGallery = () => {
   };
 
   useEffect(() => {
-    getBirds();
+    getDogs(query);
   }, [query]);
 
   const debouncedSearch = useCallback(debounce((value) => {
@@ -37,8 +37,8 @@ const BirdGallery = () => {
 
   const handleShow = async (id) => {
     try {
-      const birdData = await fetchBirdById(id);
-      setSelectedBird(birdData);
+      const dogData = await fetchDogById(id);
+      setSelectedDog(dogData);
       setShow(true);
     } catch (error) {
       setError(error.message);
@@ -59,26 +59,30 @@ const BirdGallery = () => {
     <div className="container">
       <SearchBar query={query} onChange={handleSearchChange} />
       <div className="row">
-        {birds.map((bird) => (
-          <BirdCard key={bird.id} bird={bird} onClick={handleShow} />
+        {dogs.map((dog) => (
+          <DogCard key={dog.id} dog={dog} onClick={handleShow} />
         ))}
       </div>
 
-      {selectedBird && (
+      {selectedDog && (
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>{selectedBird.name}</Modal.Title>
+            <Modal.Title>{selectedDog.name}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <img src={selectedBird.image} alt={selectedBird.name} className="img-fluid mb-3" />
-            <p><strong>Species:</strong> {selectedBird.species}</p>
-            <p><strong>Family:</strong> {selectedBird.family}</p>
-            <p><strong>Habitat:</strong> {selectedBird.habitat}</p>
-            <p><strong>Place of Found:</strong> {selectedBird.place_of_found}</p>
-            <p><strong>Diet:</strong> {selectedBird.diet}</p>
-            <p><strong>Description:</strong> {selectedBird.description}</p>
-            <p><strong>Weight:</strong> {selectedBird.weight_kg} kg</p>
-            <p><strong>Height:</strong> {selectedBird.height_cm} cm</p>
+            <img src={selectedDog.image} alt={selectedDog.name} className="img-fluid mb-3" />
+            <p><strong>Breed Group:</strong> {selectedDog.breed_group}</p>
+            <p><strong>Size:</strong> {selectedDog.size}</p>
+            <p><strong>Lifespan:</strong> {selectedDog.lifespan}</p>
+            <p><strong>Origin:</strong> {selectedDog.origin}</p>
+            <p><strong>Temperament:</strong> {selectedDog.temperament}</p>
+            <p><strong>Colors:</strong></p>
+            <ul>
+              {selectedDog.colors.map((color, index) => (
+                <li key={index}>{color}</li>
+              ))}
+            </ul>
+            <p><strong>Description:</strong> {selectedDog.description}</p>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
@@ -91,4 +95,4 @@ const BirdGallery = () => {
   );
 };
 
-export default BirdGallery;
+export default DogGallery;
