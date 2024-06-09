@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import "./Carousel.css"; // Import CSS file for styling (create this file if it doesn't exist)
+import "./Carousel.css"; 
 
-// Importing images
 import image1 from "../images/cat.jpg";
 import image2 from "../images/bird.jpg";
 import image3 from "../images/dog.jpg";
@@ -37,5 +36,4 @@ const Carousel = () => {
     </div>
   );
 };
-
 export default Carousel;
