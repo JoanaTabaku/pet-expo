@@ -1,18 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchBirds, fetchBirdById } from '../api/apiService';
 import { Modal, Button } from 'react-bootstrap';
-import debounce from 'lodash.debounce';
-import SearchBar from './SearchBar';
 import BirdCard from './BirdCard';
 import './BirdGallery.css';
 
-const BirdGallery = () => {
+const BirdGallery = ({query}) => {
   const [birds, setBirds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
   const [selectedBird, setSelectedBird] = useState(null);
-  const [query, setQuery] = useState('');
 
   const getBirds = async () => {
     setLoading(true);
@@ -31,9 +28,6 @@ const BirdGallery = () => {
     getBirds();
   }, [query]);
 
-  const debouncedSearch = useCallback(debounce((value) => {
-    setQuery(value);
-  }, 500), []);
 
   const handleShow = async (id) => {
     try {
@@ -47,17 +41,11 @@ const BirdGallery = () => {
 
   const handleClose = () => setShow(false);
 
-  const handleSearchChange = (event) => {
-    const value = event.target.value;
-    debouncedSearch(value);
-  };
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="container">
-      <SearchBar query={query} onChange={handleSearchChange} />
       <div className="row">
         {birds.map((bird) => (
           <BirdCard key={bird.id} bird={bird} onClick={handleShow} />

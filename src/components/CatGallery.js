@@ -1,24 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchCats, fetchCatById } from '../api/apiService';
 import { Modal, Button } from 'react-bootstrap';
-import debounce from 'lodash.debounce';
-import SearchBar from './SearchBar'; 
 import CatCard from './CatCard';
 import './CatGallery.css';
 
-const CatGallery = () => {
+const CatGallery = ({query}) => {
   const [cats, setCats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
   const [selectedCat, setSelectedCat] = useState(null);
-  const [query, setQuery] = useState('');
 
-  const getCats = async (searchQuery) => {
+  const getCats = async () => {
     setLoading(true);
     setError(null);
     try {
-      const catData = await fetchCats(searchQuery);
+      const catData = await fetchCats(query);
       setCats(catData);
     } catch (error) {
       setError(error.message);
@@ -28,12 +25,9 @@ const CatGallery = () => {
   };
 
   useEffect(() => {
-    getCats(query);
+    getCats();
   }, [query]);
 
-  const debouncedSearch = useCallback(debounce((value) => {
-    setQuery(value);
-  }, 500), []);
 
   const handleShow = async (id) => {
     try {
@@ -47,17 +41,11 @@ const CatGallery = () => {
 
   const handleClose = () => setShow(false);
 
-  const handleSearchChange = (event) => {
-    const value = event.target.value;
-    debouncedSearch(value);
-  };
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="container">
-      <SearchBar query={query} onChange={handleSearchChange} />
       <div className="row">
         {cats.map((cat) => (
           <CatCard key={cat.id} cat={cat} onClick={handleShow} />

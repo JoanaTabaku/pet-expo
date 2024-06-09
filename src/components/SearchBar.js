@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-
-const SearchBar = React.memo(({ query, onChange }) => {
+const SearchBar = React.memo(({ onChangeValue }) => {
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -8,13 +7,12 @@ const SearchBar = React.memo(({ query, onChange }) => {
   }, []);
 
   return (
-    <div className="search-bar mb-3">
+    <div className="search-bar mb-3 w-75 m-auto">
       <input
         ref={inputRef}
         type="text"
         placeholder="Search by name..."
-        value={query}
-        onChange={onChange}
+        onChange={onChangeValue}
         className="form-control"
       />
     </div>
